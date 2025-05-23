@@ -1,0 +1,95 @@
+plugins {
+    id 'java'
+}
+
+group 'com.file'
+version '1.0.0'
+
+sourceCompatibility = 1.8
+
+repositories {
+    maven {
+        url "http://maven.aliyun.com/nexus/content/groups/public/"
+    }
+    maven {
+        url "http://repository.groupdocs.com/repo/"
+    }
+    mavenLocal()
+}
+
+dependencies {
+    implementation "org.apache.logging.log4j:log4j-api:2.17.2"
+    implementation "org.apache.logging.log4j:log4j-core:2.17.2"
+    implementation "org.apache.logging.log4j:log4j-slf4j-impl:2.17.2"
+    implementation "org.apache.logging.log4j:log4j-web:2.17.2"
+
+    implementation "org.apache.commons:commons-lang3:3.6"
+
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testCompileOnly 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+    implementation group: 'commons-io', name: 'commons-io', version: '2.8.0'
+
+    implementation "org.apache.pdfbox:pdfbox:2.0.26"
+    implementation "org.apache.pdfbox:fontbox:2.0.26"
+    implementation "com.google.guava:guava:18.0"
+    implementation "org.apache.commons:commons-csv:1.8"
+    implementation "org.apache.poi:poi:4.1.2"
+    implementation "org.apache.poi:poi-ooxml:4.1.2"
+
+    implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
+
+    implementation group: 'com.opencsv', name: 'opencsv', version: '5.4'
+
+    compile "technology.tabula:tabula:1.0.5"
+
+    implementation group: 'org.dom4j', name: 'dom4j', version: '2.1.3'
+    implementation group: 'jaxen', name: 'jaxen', version: '1.2.0'
+
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.5'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+//去除不需要的依赖
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    all*.exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+    all*.exclude group: 'org.slf4j', module: 'slf4j-simple'
+}
+
+jar {
+    enabled = true
+    destinationDir file('dist/app')
+    archiveName project.name + '-' + version + '.jar'
+
+    exclude '**/*.xml'
+    exclude '**/*.properties'
+    exclude '**/*.crt'
+    exclude '**/*.key'
+    doLast {
+        copy {
+            from file('src/main/resources/')
+            into 'dist/conf'
+        }
+        copy {
+            from configurations.runtimeClasspath
+            into 'dist/lib'
+        }
+        copy {
+            from file('scripts/')
+            into 'dist/'
+        }
+        copy {
+            from file('.').listFiles().findAll { File f -> (f.name.endsWith('.bat') || f.name.endsWith('.sh') || f.name.endsWith('.env')) }
+            into 'dist'
+        }
+    }
+}
