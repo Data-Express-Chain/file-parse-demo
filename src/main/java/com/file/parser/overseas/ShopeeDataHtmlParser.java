@@ -2,7 +2,7 @@ package com.file.parser;
 
 
 import com.file.bo.ResponseData;
-import com.file.bo.ShopeeData;
+import com.file.bo.overseas.ShopeeData;
 import com.file.constant.ErrorCode;
 import com.file.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -106,7 +106,8 @@ public class ShopeeDataHtmlParser {
 
         Elements elements = doc.getElementsByTag("tbody");
         if (elements.isEmpty()) {
-            throw new RuntimeException("html can not find tbody tag");
+            log.info("parseShopeeDataProfileHtml failed, empty doc");
+            return shopeeDataProfile;
         }
 
         Element tbodyElement = elements.get(0);
