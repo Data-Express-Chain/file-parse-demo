@@ -43,38 +43,6 @@ public class GojekXmlParser {
         return new ResponseData<>(json, ErrorCode.SUCCESS.getCode(), ErrorCode.SUCCESS.getMsg());
     }
 
-    public ResponseData<String> parseProfileXmlToJson(String daId, String filePath) {
-        log.info("parseProfileXmlToJson started, daId:{}, filePath:{}", daId, filePath);
-        String json = null;
-
-        try {
-            GojekData.UserProfileData userProfileData = parseUserProfileXml(filePath);
-            json = JsonUtils.convertObjectToJson(userProfileData);
-        } catch (Exception e) {
-            log.error("|{}||{}|{}|{}|{}", ErrorCode.FILE_PARSE_EXCEPTION.getCode(), daId, "", "", "parseProfileXmlToJson failed", e);
-            return new ResponseData<>(null, ErrorCode.FILE_PARSE_EXCEPTION.getCode(), ErrorCode.FILE_PARSE_EXCEPTION.getMsg());
-        }
-
-        log.info("parseProfileXmlToJson completed, daId:{}, filePath:{}", daId, filePath);
-        return new ResponseData<>(json, ErrorCode.SUCCESS.getCode(), ErrorCode.SUCCESS.getMsg());
-    }
-
-    public ResponseData<String> parseTransactionXmlToJson(String daId, String filePath) {
-        log.info("parseTransactionXmlToJson started, daId:{}, filePath:{}", daId, filePath);
-        String json = null;
-
-        try {
-            GojekData.TransactionListData transactionListData = parseTransactionXml(filePath);
-            json = JsonUtils.convertObjectToJson(transactionListData);
-        } catch (Exception e) {
-            log.error("|{}||{}|{}|{}|{}", ErrorCode.FILE_PARSE_EXCEPTION.getCode(), daId, "", "", "parseTransactionXmlToJson failed", e);
-            return new ResponseData<>(null, ErrorCode.FILE_PARSE_EXCEPTION.getCode(), ErrorCode.FILE_PARSE_EXCEPTION.getMsg());
-        }
-
-        log.info("parseTransactionXmlToJson completed, daId:{}, filePath:{}", daId, filePath);
-        return new ResponseData<>(json, ErrorCode.SUCCESS.getCode(), ErrorCode.SUCCESS.getMsg());
-    }
-
     private GojekData.UserProfileData parseUserProfileXml(String filePath) throws DocumentException {
         GojekData.UserProfileData userProfileData = new GojekData.UserProfileData();
         GojekData.UserProfileData.UserProfile userProfile = new GojekData.UserProfileData.UserProfile();
@@ -214,14 +182,14 @@ public class GojekXmlParser {
 
     public static void main(String[] args) {
         GojekXmlParser xmlParser = new GojekXmlParser();
-        String userProfileJson = xmlParser.parseProfileXmlToJson("", "D:\\data\\file\\gojek\\hwapp-gojek-info_profile.xml").getData();
+        String userProfileJson = xmlParser.parseGojekXmlToJson("", "D:\\data\\file\\gojek\\hwapp-gojek-info_profile.xml").getData();
         System.out.println(userProfileJson);
 
-        String transactionJson = xmlParser.parseTransactionXmlToJson("", "D:\\data\\file\\gojek\\hwapp-gojek-info_transactions.xml").getData();
+        String transactionJson = xmlParser.parseGojekXmlToJson("", "D:\\data\\file\\gojek\\hwapp-gojek-info_transactions.xml").getData();
         System.out.println(transactionJson);
 
         for (int i=0; i<3; i++) {
-            String json = xmlParser.parseTransactionXmlToJson("", "D:\\data\\file\\gojek\\hwapp-gojek-info_transactions_"+ String.valueOf(i) + ".xml").getData();
+            String json = xmlParser.parseGojekXmlToJson("", "D:\\data\\file\\gojek\\hwapp-gojek-info_transactions_"+ String.valueOf(i) + ".xml").getData();
             System.out.println(json);
         }
     }

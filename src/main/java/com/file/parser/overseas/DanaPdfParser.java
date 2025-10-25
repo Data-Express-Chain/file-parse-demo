@@ -2,7 +2,6 @@ package com.file.parser.overseas;
 
 import com.file.bo.ResponseData;
 import com.file.bo.overseas.DanaData;
-import com.file.bo.overseas.DanaTran;
 import com.file.constant.ErrorCode;
 import com.file.parser.BasePdfParser;
 import com.file.util.JsonUtils;
@@ -46,7 +45,7 @@ public class DanaPdfParser extends BasePdfParser {
     private DanaData parseDanaPdf(String filePath) {
         DanaData danaData = parseDanaHeader(filePath);
 
-        List<DanaTran> danaTrans = parseDanaTrans(filePath);
+        List<DanaData.DanaTran> danaTrans = parseDanaTrans(filePath);
         danaData.setDanaTrans(danaTrans);
 
         return danaData;
@@ -81,8 +80,8 @@ public class DanaPdfParser extends BasePdfParser {
         return danaData;
     }
 
-    private List<DanaTran> parseDanaTrans(String filePath) {
-        List<DanaTran> danaTrans = new ArrayList<>();
+    private List<DanaData.DanaTran> parseDanaTrans(String filePath) {
+        List<DanaData.DanaTran> danaTrans = new ArrayList<>();
 
         StringBuilder tanggalWaktu = new StringBuilder();
         StringBuilder transaksi = new StringBuilder();
@@ -119,7 +118,7 @@ public class DanaPdfParser extends BasePdfParser {
             }
 
             if (rowResult && StringUtils.isNotBlank(tanggalWaktu)) {
-                DanaTran danaTran = new DanaTran();
+                DanaData.DanaTran danaTran = new DanaData.DanaTran();
                 danaTran.setTanggalWaktu(tanggalWaktu.toString());
                 danaTran.setTransaksi(transaksi.toString());
                 danaTran.setMetodePembayaran(metodePembayaran.toString());

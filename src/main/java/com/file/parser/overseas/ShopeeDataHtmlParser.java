@@ -2,7 +2,7 @@ package com.file.parser;
 
 
 import com.file.bo.ResponseData;
-import com.file.bo.ShopeeData;
+import com.file.bo.overseas.ShopeeData;
 import com.file.constant.ErrorCode;
 import com.file.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
