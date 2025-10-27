@@ -76,6 +76,40 @@ public class DanaXmlParser {
         SAXReader reader = new SAXReader();
         Document document = reader.read(new File(filePath));
 
+        // 查找所有Rp相关元素
+        List<Node> rpNodes = document.selectNodes("//android.widget.TextView[contains(@text, 'Rp')]");
+        for (Node rpNode : rpNodes) {
+            Element rpElement = (Element) rpNode;
+            String rpText = rpElement.attributeValue("text");
+
+            DanaData.DanaTran danaTran = new DanaData.DanaTran();
+            danaTran.setJumlah(rpText);
+            Element parentElement = rpElement.getParent();
+            for (Element childElement : parentElement.elements()) {
+                if (childElement == rpElement) continue;
+                String childClass = childElement.attributeValue("class");
+                if (childClass != null && childClass.contains("android.view.View")) {
+                    for (Element sibling : childElement.elements()) {
+                        String indexString = sibling.attributeValue("index");
+                        if (indexString != null && indexString.equals("0")) {
+                            String childText = sibling.attributeValue("text");
+                            danaTran.setTransaksi(childText);
+                        } else if (indexString != null && indexString.equals("1")) {
+                            String childText = sibling.attributeValue("text");
+                            danaTran.setTanggalWaktu(childText);
+                        }
+                    }
+                } else if (childClass != null && childClass.contains("android.widget.TextView")) {
+                    String childText = childElement.attributeValue("text");
+                    danaTran.setMetodePembayaran(childText);
+                }
+            }
+            // 数据完整才加入
+            if (danaTran.getTransaksi() != null && danaTran.getMetodePembayaran() != null) {
+                danaTrans.add(danaTran);
+            }
+        }
+
         transactionListData.setTransactionList(danaTrans);
         return transactionListData;
     }
